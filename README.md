@@ -22,7 +22,7 @@ cd yahoo-finance-bot/
 pip3 install -r requirements.txt
 ```
 
-#### realese also avaible for windows : [Win 64](https://github.com/somkietacode/yahoo-finance-bot/releases/download/v2.0.1/YAHOO-FINANCE-BOT.zip)
+#### realese also avaible for windows : [Win 64](https://github.com/somkietacode/yahoo-finance-bot/releases/download/v2.0.1/YAHOOFINANCEBOT.zip)
 
 ### 📈 Usage
 
