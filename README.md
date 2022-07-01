@@ -1,2 +1,5 @@
 # yahoo-finance-bot
-Analyse automaticly financial data (stock, crypto, fx) form the yahoo finance api and return signal ( buy or sell)
+
+Yahoo Finance Bot : A tool that predict the dayly tendance of a market (Sell VS Buy) on the basis of Exponential Mooving Average, MACD and RSI.
+
+
