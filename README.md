@@ -16,11 +16,11 @@ __BTC : bc1qxm4e7fr0w9vv73qn4lmnxp4u5ekgndxx33trhk__
 
 ### 🛠️ Setup
 
-``
+```
 git clone https://github.com/somkietacode/yahoo-finance-bot.git
 cd yahoo-finance-bot/
 pip3 install -r requirements.txt
-``
+```
 
 #### realese also avaible for windows : [Win 64](realease)
 
