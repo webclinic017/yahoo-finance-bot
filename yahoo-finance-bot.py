@@ -66,10 +66,10 @@ class bot:
             j = 0
             for  m, row in row_iterator:
                 if j < (len(df)-1) :
-                    if row['Close'] - df['Close'][j+1]  > 0 :
+                    if row['Close'] - df['Close'][j+1]  < 0 :
                         buy.append(0)
                         sell.append(1)
-                    if row['Close'] - df['Close'][j+1]  < 0 :
+                    if row['Close'] - df['Close'][j+1]  > 0 :
                         buy.append(1)
                         sell.append(0)
                     if row['Close'] - df['Close'][j+1] == 0 :
