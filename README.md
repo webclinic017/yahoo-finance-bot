@@ -35,8 +35,9 @@ python3 yahoo-finance-bot.py -v VALUECODE -d startday -mo startmonth -y startyea
 #### Contact info :
 
 __email : s.r.a.ouedraogo@gmail.com__
-__[whatsapp](https://wa.me/+22672587871)__
-__[facebook](https://www.facebook.com/globalanalysistech)__
+
+[whatsapp](https://wa.me/+22672587871)
+[facebook](https://www.facebook.com/globalanalysistech)
 
 ### 📝 License
 
