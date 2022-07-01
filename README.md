@@ -25,10 +25,11 @@ pip3 install -r requirements.txt
 #### realese also avaible for windows : [Win 64](realease)
 
 ### 📈 Usage
-``
+
+```
 python3 yahoo-finance-bot.py -v VALUECODE -d startday -mo startmonth -y startyear
 
-``
+```
 
 ### Demo
 
