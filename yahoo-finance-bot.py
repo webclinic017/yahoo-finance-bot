@@ -1,4 +1,5 @@
-import market, datetime
+from lib import market
+import datetime
 import pandas_datareader.data as web
 import pandas_ta as ta
 from math4machinelearning.artificialneuralnetwork import *
