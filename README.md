@@ -34,38 +34,8 @@ python3 yahoo-finance-bot.py -v VALUECODE -d startday -mo startmonth -y startyea
 ### Demo
 
 
-
-  3:01
-En cours de lecture
-
+https://www.youtube.com/watch?v=a5FX1Yj1lIM
   
-    
-    
-    
-  
-
-
-
-
-  
-
-
-
-  
-    À regarder plus tard
-  
-
-  
-  À regarder plus tard
-
-
-
-
-    Ajouter à la file d'attente
-  
-
-  
-  Ajouter à la file d'attente  
 
 
 #### Contact info :
