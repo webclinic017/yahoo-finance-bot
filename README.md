@@ -33,6 +33,41 @@ python3 yahoo-finance-bot.py -v VALUECODE -d startday -mo startmonth -y startyea
 
 ### Demo
 
+
+
+  3:01
+En cours de lecture
+
+  
+    
+    
+    
+  
+
+
+
+
+  
+
+
+
+  
+    À regarder plus tard
+  
+
+  
+  À regarder plus tard
+
+
+
+
+    Ajouter à la file d'attente
+  
+
+  
+  Ajouter à la file d'attente  
+
+
 #### Contact info :
 
 __email : s.r.a.ouedraogo@gmail.com__
