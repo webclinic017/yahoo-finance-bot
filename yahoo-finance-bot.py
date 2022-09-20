@@ -34,11 +34,25 @@ class bot:
             x = np.matrix(df[["EMA","RSI_14","macd"]].to_numpy() )
             y1 = np.matrix(df[["buy"]].to_numpy())
             y2 = np.matrix(df[["sell"]].to_numpy())
+            y3 = np.matrix(df[["10_on_pips"]].to_numpy())
+            y4 = np.matrix(df[["5_on_pips"]].to_numpy())
+            y5 = np.matrix(df[["pips"]].to_numpy())
+            y6 = np.matrix(df[["2_pips"]].to_numpy())
             ann_sell = artificialneuralnetwork_classifier.artificialneuralnetwork_classifier(x,y1)
             ann_buy = artificialneuralnetwork_classifier.artificialneuralnetwork_classifier(x,y2)
+            ann_10_on_pips = artificialneuralnetwork_classifier.artificialneuralnetwork_classifier(x,y3)
+            ann_5_on_pips = artificialneuralnetwork_classifier.artificialneuralnetwork_classifier(x,y4)
+            ann_pips = artificialneuralnetwork_classifier.artificialneuralnetwork_classifier(x,y5)
+            ann_2_pips = artificialneuralnetwork_classifier.artificialneuralnetwork_classifier(x,y6)
+
             ANN[v] = {
                     "buy" : ann_buy,
-                    "sell" : ann_sell
+                    "sell" : ann_sell,
+                    "10_on_pips" : ann_10_on_pips,
+                    "5_on_pips" : ann_5_on_pips,
+                    "pips" : ann_pips,
+                    "2_pips" : ann_2_pips
+
                     }
         return ANN
 
@@ -60,6 +74,10 @@ class bot:
             df = s
             buy = []
             sell = []
+            _10_on_pips = []
+            _5_on_pips = []
+            _pips = []
+            _2_pips = []
             df = df.drop_duplicates()
             df.ta.strategy(bot_strategie,append=True)
             row_iterator = df.iterrows()
@@ -69,18 +87,69 @@ class bot:
                     if row['Close'] - df['Close'][j+1]  < 0 :
                         buy.append(0)
                         sell.append(1)
+                        var = -1 * (row['Close'] - df['Close'][j+1])
+                        if var  > row['Close'] / 1000 :
+                            _10_on_pips.append(1)
+                        else :
+                            _10_on_pips.append(0)
+                        if var  > row['Close'] / 500 :
+                            _5_on_pips.append(1)
+                        else :
+                            _5_on_pips.append(0)
+                        if var  > row['Close'] / 100 :
+                            _pips.append(1)
+                        else :
+                            _pips.append(0)
+                        if var  > row['Close'] / 50 :
+                            _2_pips.append(1)
+                        else :
+                            _2_pips.append(0)
+
                     if row['Close'] - df['Close'][j+1]  > 0 :
                         buy.append(1)
                         sell.append(0)
+                        var = (row['Close'] - df['Close'][j+1])
+                        if var  > row['Close'] / 1000 :
+                            _10_on_pips.append(1)
+                        else :
+                            _10_on_pips.append(0)
+                        if var  > row['Close'] / 500 :
+                            _5_on_pips.append(1)
+                        else :
+                            _5_on_pips.append(0)
+                        if var  > row['Close'] / 100 :
+                            _pips.append(1)
+                        else :
+                            _pips.append(0)
+                        if var  > row['Close'] / 50 :
+                            _2_pips.append(1)
+                        else :
+                            _2_pips.append(0)
+
                     if row['Close'] - df['Close'][j+1] == 0 :
                         buy.append(0)
                         sell.append(0)
+                        _10_on_pips.append(0)
+                        _5_on_pips.append(0)
+                        _pips.append(0)
+                        _2_pips.append(0)
+
                 if j == (len(df)-1) :
                         buy.append("")
                         sell.append("")
+                        _10_on_pips.append("")
+                        _5_on_pips.append("")
+                        _pips.append("")
+                        _2_pips.append("")
+
+
                 j += 1
             df["buy"]=buy
             df["sell"]=sell
+            df["10_on_pips"]= _10_on_pips
+            df["5_on_pips"] = _5_on_pips
+            df["pips"] = _pips
+            df["2_pips"] = _2_pips
             df["EMA"]= df["EMA_21"] - df["EMA_8"]
             df["macd"]= df["MACD_H"] - df["MACD_S"]
             analyses.append(df)
@@ -96,11 +165,20 @@ class bot:
             x = bottom[["EMA","RSI_14","macd"]].to_numpy()
             buy = self.neurones[v]["buy"].predict(x)
             sell = self.neurones[v]["sell"].predict(x)
+            _10_on_pips = self.neurones[v]["10_on_pips"].predict(x)
+            _5_on_pips = self.neurones[v]["5_on_pips"].predict(x)
+            _pips = self.neurones[v]["pips"].predict(x)
+            _2_pips = self.neurones[v]["2_pips"].predict(x)
             prediction[v] = {
                 "buy" : buy,
-                "sell": sell
+                "sell": sell,
+                "10_on_pips" : _10_on_pips,
+                "5_on_pips" : _5_on_pips,
+                "pips" : _pips,
+                "2_pips" : _2_pips
             }
             return prediction
+
 
 
 
@@ -149,6 +227,23 @@ if __name__ == "__main__" :
                     print("\n------------------------\n |"," You should buy it","|\n------------------------\n" )
                 if int(Bot.prediction[v]["buy"]) == 0 and int(Bot.prediction[v]["sell"]) == 0 :
                     print("\n------------------------\n |"," You should wait ","|\n------------------------\n" )
+                if int(Bot.prediction[v]["10_on_pips"]) == 0 :
+                    print("\n------------------------\n |"," The variation should be less then 0.1 pips ","|\n------------------------\n")
+                else :
+                    print("\n------------------------\n |"," The variation should be more then 0.1 pips ","|\n------------------------\n")
+                if int(Bot.prediction[v]["5_on_pips"]) == 0 :
+                    print("\n------------------------\n |"," The variation should be less then 0.2 pips ","|\n------------------------\n")
+                else :
+                    print("\n------------------------\n |"," The variation should be more then 0.2 pips ","|\n------------------------\n")
+                if int(Bot.prediction[v]["pips"]) == 0 :
+                    print("\n------------------------\n |"," The variation should be less then 1 pips ","|\n------------------------\n")
+                else :
+                    print("\n------------------------\n |"," The variation should be more then 1 pips ","|\n------------------------\n")
+                if int(Bot.prediction[v]["2_pips"]) == 0 :
+                    print("\n------------------------\n |"," The variation should be less then 2 pips ","|\n------------------------\n")
+                else :
+                    print("\n------------------------\n |"," The variation should be more then 2 pips ","|\n------------------------\n")
+
     if args.value == None :
         print(" No value choose ")
     else :
@@ -170,6 +265,22 @@ if __name__ == "__main__" :
                 print("\n------------------------\n |"," You should buy it","|\n------------------------\n" )
             if int(Bot.prediction[args.value]["buy"]) == 0 and int(Bot.prediction[args.value]["sell"]) == 0 :
                 print("\n------------------------\n |"," You should wait ","|\n------------------------\n" )
+            if int(Bot.prediction[args.value]["10_on_pips"]) == 0 :
+                print("\n------------------------\n |"," The variation should be less then 0.1 pips ","|\n------------------------\n")
+            else :
+                print("\n------------------------\n |"," The variation should be more then 0.1 pips ","|\n------------------------\n")
+            if int(Bot.prediction[args.value]["5_on_pips"]) == 0 :
+                print("\n------------------------\n |"," The variation should be less then 0.2 pips ","|\n------------------------\n")
+            else :
+                print("\n------------------------\n |"," The variation should be more then 0.2 pips ","|\n------------------------\n")
+            if int(Bot.prediction[args.value]["pips"]) == 0 :
+                print("\n------------------------\n |"," The variation should be less then 1 pips ","|\n------------------------\n")
+            else :
+                print("\n------------------------\n |"," The variation should be more then 1 pips ","|\n------------------------\n")
+            if int(Bot.prediction[args.value]["2_pips"]) == 0 :
+                print("\n------------------------\n |"," The variation should be less then 2 pips ","|\n------------------------\n")
+            else :
+                print("\n------------------------\n |"," The variation should be more then 2 pips ","|\n------------------------\n")
     if args.value == None and args.market == None :
         print(" You should precise at less a value or a market.")
     #Bot = bot('ninja',datetime.datetime(2021, 12, 1))
