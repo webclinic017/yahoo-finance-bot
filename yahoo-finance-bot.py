@@ -1,6 +1,8 @@
 from lib import market
 import datetime
+from datetime import  timedelta
 import pandas_datareader.data as web
+import pandas_datareader as pdr
 import pandas_ta as ta
 from math4machinelearning.artificialneuralnetwork import *
 from math4machinelearning.artificialneuralnetwork import artificialneuralnetwork_classifier
@@ -16,9 +18,10 @@ class bot:
       daylys = []
       for v in self.symbols :
         start = self.start_date
-        end = datetime.date.today()
+        end = datetime.date.today() - timedelta(days=1)
         try:
-            df = web.DataReader(v, "yahoo", start , end)
+            #df = web.DataReader(v, "yahoo", start , end)
+            df = pdr.get_data_yahoo(v, start , end, interval='d')
             daylys.append(df)
             df.to_csv('./data/'+v+'.csv')
         except Exception as e:
