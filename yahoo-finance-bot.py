@@ -18,7 +18,7 @@ class bot:
       daylys = []
       for v in self.symbols :
         start = self.start_date
-        end = datetime.date.today() - timedelta(days=1)
+        end = datetime.date.today() #- timedelta(days=2)
         try:
             #df = web.DataReader(v, "yahoo", start , end)
             df = pdr.get_data_yahoo(v, start , end, interval='d')
@@ -34,7 +34,7 @@ class bot:
         for v in self.symbols :
             df = pd.read_csv('./analyse/'+v+'.csv')
             df = df.dropna(axis=0)
-            x = np.matrix(df[["EMA","RSI_14","macd"]].to_numpy() )
+            x = np.matrix(df[["EMA","RSI_14","macd","bbands","PSL_12","ENTP_10","EBSW_40_10", "KURT_30"]].to_numpy() )
             y1 = np.matrix(df[["buy"]].to_numpy())
             y2 = np.matrix(df[["sell"]].to_numpy())
             y3 = np.matrix(df[["10_on_pips"]].to_numpy())
@@ -59,7 +59,7 @@ class bot:
                     }
         return ANN
 
-    def indicate():
+    def indicate(gama):
         bot_strategie = ta.Strategy(
             name="Bot strat",
             description="Bot strategy",
@@ -69,6 +69,11 @@ class bot:
             {"kind": "rsi"},
             {"kind": "macd", "fast": 8, "slow": 21, "col_names": ("MACD", "MACD_H", "MACD_S")},
             {"kind": "rsi"},
+            {"kind" : "bbands"},
+            {"kind" : "psl"},
+            {"kind" : "entropy"},
+            {"kind" : "ebsw"},
+            {"kind" : "kurtosis"}
             ]
             )
         analyses = []
@@ -87,49 +92,49 @@ class bot:
             j = 0
             for  m, row in row_iterator:
                 if j < (len(df)-1) :
-                    if row['Close'] - df['Close'][j+1]  < 0 :
+                    if (df['close'][j+1] - row['close'] )  <  (gama) :
                         buy.append(0)
                         sell.append(1)
-                        var = -1 * (row['Close'] - df['Close'][j+1])
-                        if var  > row['Close'] / 1000 :
+                        var = -1 * (row['close'] - df['close'][j+1])
+                        if var  > row['close'] / 1000 :
                             _10_on_pips.append(1)
                         else :
                             _10_on_pips.append(0)
-                        if var  > row['Close'] / 500 :
+                        if var  > row['close'] / 500 :
                             _5_on_pips.append(1)
                         else :
                             _5_on_pips.append(0)
-                        if var  > row['Close'] / 100 :
+                        if var  > row['close'] / 100 :
                             _pips.append(1)
                         else :
                             _pips.append(0)
-                        if var  > row['Close'] / 50 :
+                        if var  > row['close'] / 50 :
                             _2_pips.append(1)
                         else :
                             _2_pips.append(0)
 
-                    if row['Close'] - df['Close'][j+1]  > 0 :
+                    if (df['close'][j+1] - row['close']) > ( 1 * gama) :
                         buy.append(1)
                         sell.append(0)
-                        var = (row['Close'] - df['Close'][j+1])
-                        if var  > row['Close'] / 1000 :
+                        var = (row['close'] - df['close'][j+1])
+                        if var  > row['close'] / 1000 :
                             _10_on_pips.append(1)
                         else :
                             _10_on_pips.append(0)
-                        if var  > row['Close'] / 500 :
+                        if var  > row['close'] / 500 :
                             _5_on_pips.append(1)
                         else :
                             _5_on_pips.append(0)
-                        if var  > row['Close'] / 100 :
+                        if var  > row['close'] / 100 :
                             _pips.append(1)
                         else :
                             _pips.append(0)
-                        if var  > row['Close'] / 50 :
+                        if var  > row['close'] / 50 :
                             _2_pips.append(1)
                         else :
                             _2_pips.append(0)
 
-                    if row['Close'] - df['Close'][j+1] == 0 :
+                    if  (-1 * gama) <= (df['close'][j+1] - row['close']) <= ( 1 * gama) :
                         buy.append(0)
                         sell.append(0)
                         _10_on_pips.append(0)
@@ -155,6 +160,7 @@ class bot:
             df["2_pips"] = _2_pips
             df["EMA"]= df["EMA_21"] - df["EMA_8"]
             df["macd"]= df["MACD_H"] - df["MACD_S"]
+            df["bbands"] = df["BBM_5_2.0"] - df["EMA_8"]
             analyses.append(df)
             df.to_csv('./analyse/'+self.symbols[k]+'.csv')
             k += 1
@@ -165,7 +171,7 @@ class bot:
         for v in self.symbols :
             df = pd.read_csv('./analyse/'+v+'.csv')
             bottom = df.tail(1)
-            x = bottom[["EMA","RSI_14","macd"]].to_numpy()
+            x = bottom[["EMA","RSI_14","macd","bbands","PSL_12","ENTP_10","EBSW_40_10", "KURT_30"]].to_numpy()
             buy = self.neurones[v]["buy"].predict(x)
             sell = self.neurones[v]["sell"].predict(x)
             _10_on_pips = self.neurones[v]["10_on_pips"].predict(x)
@@ -192,7 +198,7 @@ class bot:
     if symbol != ""  :
         self.symbols = [symbol]
     self.daylys = save_data()
-    self.analyse = indicate()
+    self.analyse = indicate(0)
     self.neurones = learn()
     self.prediction = predict()
 
