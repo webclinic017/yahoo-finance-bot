@@ -214,7 +214,7 @@ class bot:
     if symbol != ""  :
         self.symbols = [symbol]
     self.daylys = save_data()
-    self.analyse = indicate(0.1)
+    self.analyse = indicate(0.01)
     self.neurones = learn()
     self.prediction = predict()
 
@@ -242,8 +242,8 @@ if __name__ == "__main__" :
         else :
             print(" |Start DATE :",args.day,"/", args.month,"/", args.year,"|\n-----------------------------\n" )
             Bot = bot(type=args.market,start_date=datetime.datetime(int(args.year), int(args.month) , int(args.day) ))
-            print("\n-----------------------------\n |"," SIMPLE SUPPORT FORCAST : ",int(Bot.prediction[v]["support"]),"|\n-----------------------------\n" )
-            print("\n-----------------------------\n |"," SIMPLE RESISTANCE FORCAST : ",int(Bot.prediction[v]["resistance"]),"|\n-----------------------------\n" )
+            print("\n-----------------------------\n |"," SIMPLE SUPPORT FORCAST : ",float(Bot.prediction[v]["support"]),"|\n-----------------------------\n" )
+            print("\n-----------------------------\n |"," SIMPLE RESISTANCE FORCAST : ",float(Bot.prediction[v]["resistance"]),"|\n-----------------------------\n" )
             for v in Bot.symbols :
                 print("\n-----------------------------\n |"," Value Study : ",v,"|\n-----------------------------\n" )
                 print("\n-----------------------------\n |","Bot says buy bit is :", int(Bot.prediction[v]["buy"]),"|\n-----------------------------\n" )
@@ -284,8 +284,8 @@ if __name__ == "__main__" :
         else :
             print(" |Start DATE :",args.day,"/", args.month,"/", args.year,"|\n-----------------------------\n" )
             Bot = bot(symbol=args.value,start_date= datetime.datetime(int(args.year), int(args.month) , int(args.day) ))
-            print("\n-----------------------------\n |"," SIMPLE Low FORCAST : ",int(Bot.prediction[args.value]["support"]),"|\n-----------------------------\n" )
-            print("\n-----------------------------\n |"," SIMPLE High FORCAST : ",int(Bot.prediction[args.value]["resistance"]),"|\n-----------------------------\n" )
+            print("\n-----------------------------\n |"," SIMPLE Low FORCAST : ",float(Bot.prediction[args.value]["support"]),"|\n-----------------------------\n" )
+            print("\n-----------------------------\n |"," SIMPLE High FORCAST : ",float(Bot.prediction[args.value]["resistance"]),"|\n-----------------------------\n" )
             print("\n-----------------------------\n |","Bot says buy bit is :", int(Bot.prediction[args.value]["buy"]),"|\n-----------------------------\n" )
             print("\n-----------------------------\n |","Bot says sell bit is :", int(Bot.prediction[args.value]["sell"]),"|\n-----------------------------\n" )
             if int(Bot.prediction[args.value]["buy"]) == 0 and int(Bot.prediction[args.value]["sell"]) == 1 :
