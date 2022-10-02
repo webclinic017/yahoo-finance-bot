@@ -18,7 +18,7 @@ class bot:
       daylys = []
       for v in self.symbols :
         start = self.start_date
-        end = datetime.date.today() #- timedelta(days=2)
+        end = datetime.date.today()# - timedelta(days=2)
         try:
             #df = web.DataReader(v, "yahoo", start , end)
             df = pdr.get_data_yahoo(v, start , end, interval='d')
@@ -92,10 +92,10 @@ class bot:
             j = 0
             for  m, row in row_iterator:
                 if j < (len(df)-1) :
-                    if (df['close'][j+1] - row['close'] )  <  (gama) :
+                    if  (df['close'][j+1]-row['close'])  <  (-1 * gama) :
                         buy.append(0)
                         sell.append(1)
-                        var = -1 * (row['close'] - df['close'][j+1])
+                        var = -1 * (df['close'][j+1] - row['close'])
                         if var  > row['close'] / 1000 :
                             _10_on_pips.append(1)
                         else :
@@ -113,10 +113,10 @@ class bot:
                         else :
                             _2_pips.append(0)
 
-                    if (df['close'][j+1] - row['close']) > ( 1 * gama) :
+                    if (df['close'][j+1]-row['close'])  > ( 1 * gama) :
                         buy.append(1)
                         sell.append(0)
-                        var = (row['close'] - df['close'][j+1])
+                        var = ( df['close'][j+1] - row['close'])
                         if var  > row['close'] / 1000 :
                             _10_on_pips.append(1)
                         else :
@@ -134,7 +134,7 @@ class bot:
                         else :
                             _2_pips.append(0)
 
-                    if  (-1 * gama) <= (df['close'][j+1] - row['close']) <= ( 1 * gama) :
+                    if  (-1 * gama) < df['close'][j+1] - row['close'] < ( 1 * gama) :
                         buy.append(0)
                         sell.append(0)
                         _10_on_pips.append(0)
@@ -198,7 +198,7 @@ class bot:
     if symbol != ""  :
         self.symbols = [symbol]
     self.daylys = save_data()
-    self.analyse = indicate(0)
+    self.analyse = indicate(0.1)
     self.neurones = learn()
     self.prediction = predict()
 
