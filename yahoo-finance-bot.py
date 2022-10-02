@@ -34,7 +34,7 @@ class bot:
         for v in self.symbols :
             df = pd.read_csv('./analyse/'+v+'.csv')
             df = df.dropna(axis=0)
-            x = np.matrix(df[["EMA","RSI_14","macd","bbands","PSL_12","ENTP_10","EBSW_40_10", "KURT_30"]].to_numpy() )
+            x = np.matrix(df[["EMA","RSI_14","macd","bbands","PSL_12","ENTP_10","EBSW_40_10", "KURT_30", "candle"]].to_numpy() )
             y1 = np.matrix(df[["buy"]].to_numpy())
             y2 = np.matrix(df[["sell"]].to_numpy())
             y3 = np.matrix(df[["10_on_pips"]].to_numpy())
@@ -134,7 +134,7 @@ class bot:
                         else :
                             _2_pips.append(0)
 
-                    if  (-1 * gama) < df['close'][j+1] - row['close'] < ( 1 * gama) :
+                    if  (-1 * gama) < (df['close'][j+1] - row['close']) < ( 1 * gama) :
                         buy.append(0)
                         sell.append(0)
                         _10_on_pips.append(0)
@@ -161,6 +161,7 @@ class bot:
             df["EMA"]= df["EMA_21"] - df["EMA_8"]
             df["macd"]= df["MACD_H"] - df["MACD_S"]
             df["bbands"] = df["BBM_5_2.0"] - df["EMA_8"]
+            df["candle"] = (df["open"] - df["close"]) / (df["high"] - df["low"])
             analyses.append(df)
             df.to_csv('./analyse/'+self.symbols[k]+'.csv')
             k += 1
@@ -171,7 +172,7 @@ class bot:
         for v in self.symbols :
             df = pd.read_csv('./analyse/'+v+'.csv')
             bottom = df.tail(1)
-            x = bottom[["EMA","RSI_14","macd","bbands","PSL_12","ENTP_10","EBSW_40_10", "KURT_30"]].to_numpy()
+            x = bottom[["EMA","RSI_14","macd","bbands","PSL_12","ENTP_10","EBSW_40_10", "KURT_30","candle"]].to_numpy()
             buy = self.neurones[v]["buy"].predict(x)
             sell = self.neurones[v]["sell"].predict(x)
             _10_on_pips = self.neurones[v]["10_on_pips"].predict(x)
